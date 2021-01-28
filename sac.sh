@@ -1,5 +1,5 @@
-s3BucketName=sage-jupe-test-101
-stackName=sage-jupe-101
+s3BucketName=sage-jupe-test-1001
+stackName=sage-jupe-1001
 permissionBoundary=arn:aws:iam::aws:policy/AdministratorAccess
 notebookName=powers.ipynb
 
