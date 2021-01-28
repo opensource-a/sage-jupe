@@ -9,7 +9,7 @@ aws cloudformation wait stack-create-complete --stack-name $stackName
 tar xvf container.tar
 cd container
 chmod +x build-and-push.sh
-./build-and-push.sh notebook-runner
+./build_and_push.sh notebook-runner
 
 cd ..
 
