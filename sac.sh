@@ -8,7 +8,10 @@ aws cloudformation wait stack-create-complete --stack-name $stackName
 
 tar xvf container.tar
 cd container
+chmod +x build-and-push.sh
 ./build-and-push.sh notebook-runner
+
+cd ..
 
 aws s3 mb s3://$s3BucketName
 aws s3 cp $notebookName s3://$s3BucketName/
