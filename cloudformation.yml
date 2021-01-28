@@ -34,50 +34,9 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
-            Action:
-              - 'sagemaker:ListProcessingJobs'
-              - 'sagemaker:DescribeProcessingJob'
-              - 'sagemaker:StopProcessingJob'
+            Action: '*'
             Resource: '*'
-          - Sid: listrules
-            Effect: Allow
-            Action:
-              - 'events:ListRules'
-            Resource: '*'
-          - Sid: runnotebookrule
-            Effect: Allow
-            Action:
-              - 'events:DeleteRule'
-              - 'events:PutTargets'
-              - 'events:RemoveTargets'
-              - 'events:DescribeRule'
-              - 'events:EnableRule'
-              - 'events:PutRule'
-              - 'events:ListTargetsByRule'
-              - 'events:DisableRule'
-            Resource: 'arn:aws:events:*:*:rule/RunNotebook*'
-          - Sid: runnotebooklambda
-            Effect: Allow
-            Action:
-              - 'lambda:AddPermission'
-              - 'lambda:InvokeFunction'
-              - 'lambda:InvokeAsync'
-              - 'lambda:RemovePermission'
-            Resource: 'arn:aws:lambda:*:*:function:RunNotebook'
-          - Sid: s3xfer
-            Effect: Allow
-            Action:
-              - 's3:GetObject'
-              - 's3:PutObject'
-            Resource:
-              - 'arn:aws:s3:::*SageMaker*'
-              - 'arn:aws:s3:::*Sagemaker*'
-              - 'arn:aws:s3:::*sagemaker*'
-          - Sid: s3create
-            Effect: Allow
-            Action:
-              - 's3:CreateBucket'
-            Resource: '*'
+ 
   BasicExecuteNotebookRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -111,41 +70,9 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
-            Action:
-              - 'cloudwatch:PutMetricData'
-              - 'logs:CreateLogStream'
-              - 'logs:PutLogEvents'
-              - 'logs:CreateLogGroup'
-              - 'logs:DescribeLogStreams'
-              - 'ecr:GetAuthorizationToken'
-              - 'ecr:BatchCheckLayerAvailability'
-              - 'ecr:GetDownloadUrlForLayer'
-              - 'ecr:BatchGetImage'
+            Action: '*'
             Resource: '*'
-          - Sid: s3xfer
-            Effect: Allow
-            Action:
-              - 's3:GetObject'
-              - 's3:ListBucket'
-              - 's3:PutObject'
-            Resource:
-              - 'arn:aws:s3:::*SageMaker*'
-              - 'arn:aws:s3:::*Sagemaker*'
-              - 'arn:aws:s3:::*sagemaker*'
-          - Sid: vpcattach
-            Effect: Allow
-            Action:
-              - 'ec2:CreateNetworkInterface'
-              - 'ec2:DeleteNetworkInterface'
-              - 'ec2:CreateNetworkInterfacePermission'
-              - 'ec2:DeleteNetworkInterface'
-              - 'ec2:DeleteNetworkInterfacePermission'
-              - 'ec2:DescribeNetworkInterfaces'
-              - 'ec2:DescribeVpcs'
-              - 'ec2:DescribeDhcpOptions'
-              - 'ec2:DescribeSubnets'
-              - 'ec2:DescribeSecurityGroups'
-            Resource: '*'
+
   ContainerBuildRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -170,30 +97,9 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action:
-                  - 'ecr:BatchGetImage'
-                  - 'ecr:BatchCheckLayerAvailability'
-                  - 'ecr:CompleteLayerUpload'
-                  - 'ecr:CreateRepository'
-                  - 'ecr:DescribeRepositories'
-                  - 'ecr:GetAuthorizationToken'
-                  - 'ecr:GetDownloadUrlForLayer'
-                  - 'ecr:InitiateLayerUpload'
-                  - 'ecr:PutImage'
-                  - 'ecr:UploadLayerPart'
-                  - 'logs:CreateLogStream'
-                  - 'logs:PutLogEvents'
-                  - 'logs:CreateLogGroup'
-                  - 'logs:DescribeLogStreams'
+                Action: '*'
                 Resource: '*'
-              - Sid: s3xfer
-                Effect: Allow
-                Action:
-                  - 's3:GetObject'
-                Resource:
-                  - 'arn:aws:s3:::*SageMaker*'
-                  - 'arn:aws:s3:::*Sagemaker*'
-                  - 'arn:aws:s3:::*sagemaker*'
+
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -214,9 +120,7 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action:
-                  - 'sagemaker:CreateProcessingJob'
-                  - 'iam:PassRole'
+                Action: '*'
                 Resource: '*'
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
