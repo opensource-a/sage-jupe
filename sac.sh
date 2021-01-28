@@ -18,5 +18,5 @@ aws s3 cp $notebookName s3://$s3BucketName/
 
 aws s3 cp cities.csv s3://$s3BucketName/
 
-aws lambda invoke --function-name RunNotebook --payload "{\"input_path\": \"s3://$s3BucketName/$notebookName\", \"parameters\": {\"input_bucket\": \"$s3BucketName\"}}" result.json
+aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3BucketName/$notebookName\", \"parameters\": {\"input_bucket\": \"$s3BucketName\"}}" result.json
 
