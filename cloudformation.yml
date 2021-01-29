@@ -5,6 +5,17 @@ Parameters:
     Description: Permissions Boundary ARN for all roles 
 
 Resources:
+  S3BucketForInput:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-input-bucket-${AWS::AccountId}'
+  S3BucketForOutput:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-output-bucket-${AWS::AccountId}'      
+
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
     Properties:
