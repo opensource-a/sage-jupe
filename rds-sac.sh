@@ -20,9 +20,17 @@ chmod +x build_and_push.sh
 
 cd ..
 
+sed -i  "s/#input_bucket/$s3InputBucket/g" $notebookName
+sed -i  "s/#output_bucket/$s3OutputBucket/g" $notebookName
+sed -i  "s/#rdsendpoint/$rdsEndpoint/g" $notebookName
+sed -i  "s/#user/$rdsUser/g" $notebookName
+sed -i  "s/#password/$rdsPassword/g" $notebookName
+sed -i  "s/#querydatabase/$database/g" $notebookName
+sed -i  "s/#querystring/$query/g" $notebookName
+
 aws s3 cp $notebookName s3://$s3InputBucket/
 
 aws s3 cp cities.csv s3://$s3InputBucket/
 
-aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/$notebookName\", \"parameters\": {\"input_bucket\": \"$s3InputBucket\", \"output_bucket\": \"$s3OutputBucket\", \"rdsendpoint\": \"$rdsEndpoint\", \"user1\": \"$rdsUser\", \"password1\": \"$rdsPassword\", \"database1\": \"$database\", \"query\": \"$query\"}}" result.json
+aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/$notebookName\"}" result.json
 
