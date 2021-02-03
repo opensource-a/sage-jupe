@@ -157,7 +157,7 @@ Resources:
           	if not A:A='notebook-runner'
           	if Y not in A:A=f"{M}.dkr.ecr.{L}.amazonaws.com/{A}"
           	if':'not in A:A=A+':latest'
-          	if not C:C=f"BasicExecuteNotebookRole-{L}"
+          	if not C:C=f"${AWS::StackName}-BasicExecuteNotebookRole"
           	if Y not in C:C=f"arn:aws:iam::{M}:role/{C}"
           	if E is _B:E=os.path.dirname(D)
           	if F==_B:F=D
