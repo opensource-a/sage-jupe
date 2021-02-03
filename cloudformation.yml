@@ -136,7 +136,7 @@ Resources:
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName: RunNotebook
+      FunctionName: !Sub '${AWS::StackName}-RunNotebook'
       Description: A function to run Jupyter notebooks using SageMaker processing jobs
       Handler: index.lambda_handler
       Runtime: python3.7
