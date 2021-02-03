@@ -19,6 +19,7 @@ Resources:
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookClientRole'
       PermissionsBoundary: !Ref PermissionsBoundary
       Description: >-
         A minimal role that lets the user run notebooks on demand or on a
@@ -52,10 +53,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       PermissionsBoundary: !Ref PermissionsBoundary    
-      RoleName: !Join 
-        - '-'
-        - - BasicExecuteNotebookRole
-          - !Ref 'AWS::Region'
+      RoleName: !Sub '${AWS::StackName}-BasicExecuteNotebookRole'
       Description: >-
         A minimal role used as the default for running the notebook container in
         SageMaker Processing
@@ -88,10 +86,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       PermissionsBoundary: !Ref PermissionsBoundary    
-      RoleName: !Join 
-        - '-'
-        - - ExecuteNotebookCodeBuildRole
-          - !Ref 'AWS::Region'
+      RoleName: !Sub '${AWS::StackName}-ContainerBuildRole'
       Description: The role for building containers to be used with sagemaker_run_notebook
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -115,6 +110,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       Description: The role for running the sagemaker_run_notebook lambda
+      RoleName: !Sub '${AWS::StackName}-RunNotebook-LambdaExecutionRole'
       PermissionsBoundary: !Ref PermissionsBoundary      
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -145,7 +141,7 @@ Resources:
         - Arn
       Timeout: 30
       Code:
-        ZipFile: |
+        ZipFile: !Sub |
           _I='notebook'
           _H='StoppingCondition'
           _G='Outputs'
@@ -165,7 +161,7 @@ Resources:
           	if Y not in C:C=f"arn:aws:iam::{M}:role/{C}"
           	if E is _B:E=os.path.dirname(D)
           	if F==_B:F=D
-          	N=os.path.basename(F);O,S=os.path.splitext(N);G=time.strftime('%Y-%m-%d-%H-%M-%S',time.gmtime());T=('papermill-'+re.sub('[^-a-zA-Z0-9]',Z,O))[:62-len(G)]+Z+G;P='/opt/ml/processing/input/';U=P+os.path.basename(D);H='{}-{}{}'.format(O,G,S);Q='/opt/ml/processing/output/';B={_F:[{'InputName':_I,'S3Input':{a:D,b:P,'S3DataType':'S3Prefix','S3InputMode':'File','S3DataDistributionType':'FullyReplicated'}}],_C:{_G:[{'OutputName':'result','S3Output':{a:E,b:Q,'S3UploadMode':'EndOfJob'}}]},'ProcessingJobName':T,_D:{_E:{'InstanceCount':1,'InstanceType':instance_type,'VolumeSizeInGB':40}},_H:{'MaxRuntimeInSeconds':7200},'AppSpecification':{'ImageUri':A,'ContainerArguments':['run_notebook']},'RoleArn':C,_A:{}}
+          	N=os.path.basename(F);O,S=os.path.splitext(N);G=time.strftime('%Y-%m-%d-%H-%M-%S',time.gmtime());T=('${AWS::StackName}-RunNotebook-'+re.sub('[^-a-zA-Z0-9]',Z,O))[:62-len(G)]+Z+G;P='/opt/ml/processing/input/';U=P+os.path.basename(D);H='{}-{}{}'.format(O,G,S);Q='/opt/ml/processing/output/';B={_F:[{'InputName':_I,'S3Input':{a:D,b:P,'S3DataType':'S3Prefix','S3InputMode':'File','S3DataDistributionType':'FullyReplicated'}}],_C:{_G:[{'OutputName':'result','S3Output':{a:E,b:Q,'S3UploadMode':'EndOfJob'}}]},'ProcessingJobName':T,_D:{_E:{'InstanceCount':1,'InstanceType':instance_type,'VolumeSizeInGB':40}},_H:{'MaxRuntimeInSeconds':7200},'AppSpecification':{'ImageUri':A,'ContainerArguments':['run_notebook']},'RoleArn':C,_A:{}}
           	if J is not _B:B=merge_extra(B,J)
           	B[_A]['PAPERMILL_INPUT']=U;B[_A]['PAPERMILL_OUTPUT']=Q+H
           	if os.environ.get(R)!=_B:B[_A][R]=os.environ[R]
