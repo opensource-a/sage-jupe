@@ -3,7 +3,7 @@ permissionBoundary=arn:aws:iam::aws:policy/AdministratorAccess
 notebookName=rdsconvertor.ipynb
 securityGroup=<sg-id>
 subnetId=<subnet-id>
-rdsEndpoint=<rds-host-endpont>
+rdsEndpoint=<rds-host-endpoint>
 rdsUser=admin
 rdsPassword=<password>
 database=cities
@@ -36,5 +36,5 @@ aws s3 cp injected-$notebookName s3://$s3InputBucket/
 
 aws s3 cp cities.csv s3://$s3InputBucket/
 
-aws lambda invoke --function-name $stackName-RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/injected-$notebookName\"}" result.json
+aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/injected-$notebookName\", \"extra_args\": {\"NetworkConfig\": {\"VpcConfig\": {\"SecurityGroupIds\": [\"$securityGroup\"], \"Subnets\": [\"$subnetId\"]}}}}" result.json
 
