@@ -1,7 +1,9 @@
 stackName=sage-jupe-101
 permissionBoundary=arn:aws:iam::aws:policy/AdministratorAccess
 notebookName=rdsconvertor.ipynb
-rdsEndpoint=database-1-instance-1.cpuyvrxxbdak.us-east-1.rds.amazonaws.com
+securityGroup=<sg-id>
+subnetId=<subnet-id>
+rdsEndpoint=<rds-host-endpont>
 rdsUser=admin
 rdsPassword=<password>
 database=cities
@@ -20,17 +22,19 @@ chmod +x build_and_push.sh
 
 cd ..
 
-sed -i  "s/#input_bucket/$s3InputBucket/g" $notebookName
-sed -i  "s/#output_bucket/$s3OutputBucket/g" $notebookName
-sed -i  "s/#rdsendpoint/$rdsEndpoint/g" $notebookName
-sed -i  "s/#user/$rdsUser/g" $notebookName
-sed -i  "s/#password/$rdsPassword/g" $notebookName
-sed -i  "s/#querydatabase/$database/g" $notebookName
-sed -i  "s/#querystring/$query/g" $notebookName
+cp $notebookName injected-$notebookName
 
-aws s3 cp $notebookName s3://$s3InputBucket/
+sed -i  "s/#input_bucket/$s3InputBucket/g" injected-$notebookName
+sed -i  "s/#output_bucket/$s3OutputBucket/g" injected-$notebookName
+sed -i  "s/#rdsendpoint/$rdsEndpoint/g" injected-$notebookName
+sed -i  "s/#user/$rdsUser/g" injected-$notebookName
+sed -i  "s/#password/$rdsPassword/g" injected-$notebookName
+sed -i  "s/#querydatabase/$database/g" injected-$notebookName
+sed -i  "s/#querystring/$query/g" injected-$notebookName
+
+aws s3 cp injected-$notebookName s3://$s3InputBucket/
 
 aws s3 cp cities.csv s3://$s3InputBucket/
 
-aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/$notebookName\"}" result.json
+aws lambda invoke --function-name RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3InputBucket/injected-$notebookName\"}" result.json
 
