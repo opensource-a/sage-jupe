@@ -1,5 +1,6 @@
 import gzip
 import os 
+import pandas as pd
 
 path='local'
 import os
@@ -9,3 +10,8 @@ for file in os.listdir(path):
         print(file)
         f=gzip.open(path+"/"+file,'rb')
         file_content=f.read()
+        print(file_content)
+        outfile=os.path.splitext(file)[0]
+        df = pd.read_json(file_content, lines=True)
+        print(df)
+        df.to_csv (path+'/'+outfile+'.csv', index = None)
