@@ -11,7 +11,12 @@ for file in os.listdir(path):
         f=gzip.open(path+"/"+file,'rb')
         file_content=f.read()
         print(file_content)
-        outfile=os.path.splitext(file)[0]
         df = pd.read_json(file_content, lines=True)
         print(df)
-        df.to_csv (path+'/'+outfile+'.csv', index = None)
+        line_count=df.shape[0]
+        print(line_count)
+        i=0
+        while (i < line_count):
+            df.iloc[[i]].to_csv(path+'/'+df.iloc[i,0]+'.csv', index=None)
+            i=i+1
+        print("files generated")
