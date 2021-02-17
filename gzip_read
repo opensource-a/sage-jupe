@@ -1,0 +1,11 @@
+import gzip
+import os 
+
+path='local'
+import os
+print(os.listdir(path))
+for file in os.listdir(path):
+    if file.endswith(".gz"):
+        print(file)
+        f=gzip.open(path+"/"+file,'rb')
+        file_content=f.read()
