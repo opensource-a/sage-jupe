@@ -17,7 +17,7 @@ table=''
 delimiter=','
 fields='["field1","field2"]
 
-engine = create_engine('mysql://'+'dbusername+':'+dbpassword+'@'+dbhost+'/'database) 
+engine = create_engine('mysql://'+dbusername+':'+dbpassword+'@'+dbhost+'/'+database) 
 print(os.listdir(path))
 for file in os.listdir(path):
     if file.endswith(".csv"):
