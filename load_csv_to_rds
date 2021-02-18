@@ -15,13 +15,14 @@ dbhost=''
 database=''
 table=''
 delimiter=','
+fields='["field1","field2"]
 
 engine = create_engine('mysql://'+'dbusername+':'+dbpassword+'@'+dbhost+'/'database) 
 print(os.listdir(path))
 for file in os.listdir(path):
     if file.endswith(".csv"):
         print(file)
-        df = pd.read_csv(path+'/'+file,sep=delimiter,encoding='utf8')
+        df = pd.read_csv(path+'/'+file,sep=delimiter,encoding='utf8',names=fields)
         print(df)
         df.to_sql(table,con=engine,index=False,if_exists='append')
         print(file + " added to RDS")
