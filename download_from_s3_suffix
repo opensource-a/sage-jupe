@@ -5,7 +5,7 @@ s3_client = boto3.client('s3')
 
 
 
-def download_dir(prefix, suffix, local, bucket, client=s3_client):
+def download_dir(bucketnprefix, suffix, local, client=s3_client):
     """
     params:
     - prefix: pattern to match in s3
@@ -17,7 +17,14 @@ def download_dir(prefix, suffix, local, bucket, client=s3_client):
     keys = []
     dirs = []
     next_token = ''
+    splitbucketnprefix = bucketnprefix.split('/')
+    bucket = splitbucketnprefix[0]
+    splitbucketnprefix.pop(0)
+    #print(splitbucketnprefix)
+    prefix = "/".join(splitbucketnprefix)
+    print(prefix)
     base_kwargs = {
+        
         'Bucket':bucket,
         'Prefix':prefix,
     }
@@ -43,4 +50,4 @@ def download_dir(prefix, suffix, local, bucket, client=s3_client):
         filename = os.path.basename(dest_pathname)
         client.download_file(bucket, k, local+"/"+filename)
         
-download_dir('prefix','suffix','local-path','bucket') 
+download_dir('bucketname/prefix1/prefix2','suffix','localdir') 
