@@ -15,7 +15,7 @@ dbhost=''
 database=''
 table=''
 delimiter=','
-fields='["field1","field2"]
+fields='["field1","field2"]'
 
 engine = create_engine('mysql://'+dbusername+':'+dbpassword+'@'+dbhost+'/'+database) 
 print(os.listdir(path))
