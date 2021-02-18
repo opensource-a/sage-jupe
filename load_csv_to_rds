@@ -1,0 +1,24 @@
+import os 
+import pandas as pd
+import csv
+import MySQLdb
+from sqlalchemy import create_engine, types
+
+path='local'
+dbusername=''
+dbpassword=''
+dbhost=''
+database=''
+table=''
+delimiter=','
+
+engine = create_engine('mysql://'+'dbusername+':'+dbpassword+'@'+dbhost+'/'database) 
+print(os.listdir(path))
+for file in os.listdir(path):
+    if file.endswith(".csv"):
+        print(file)
+        df = pd.read_csv(path+'/'+file,sep=delimiter,encoding='utf8')
+        print(df)
+        df.to_sql(table,con=engine,index=False,if_exists='append')
+        print(file + " added to RDS")
+print("Load Complete")    
