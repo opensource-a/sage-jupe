@@ -5,11 +5,68 @@ Parameters:
     Description: Permissions Boundary ARN for all roles 
 
 Resources:
+  AthenaWorkGroup:
+    Type: AWS::Athena::WorkGroup
+    Properties:
+      Name: !Sub '${AWS::StackName}-athena-workgroup-${AWS::AccountId}'
+      State: ENABLED
+      RecursiveDeleteOption: true
+      WorkGroupConfiguration:
+        EnforceWorkGroupConfiguration: false
+        PublishCloudWatchMetricsEnabled: true
+        RequesterPaysEnabled: true
+        ResultConfiguration:
+          OutputLocation: !Sub 's3://${AWS::StackName}-input-bucket-${AWS::AccountId}/output'
+  GlueSchema:
+    Type: AWS::Glue::Schema
+    Properties: 
+      Compatibility: DISABLED
+      DataFormat: AVRO
+      Name: !Sub '${AWS::StackName}-glue-schema-${AWS::AccountId}'
+      SchemaDefinition: '{"type" : "record","name" : "Cities", "fields" : [{"type": "string","name": "city"}, {"type": "string","name": "city_ascii"}, {"type": "double","name": "lat"}, {"type": "double", "name": "lng"}, {"type": "string","name": "country"},{"type": "string", "name": "iso2"}, {"type": "string", "name": "iso3"}, {"type": "string", "name": "admin_name"}, {"type": "string","name": "capital"},{"type": "double", "name": "population"},{"type": "double", "name": "id"}]}'
+  GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Sub '${AWS::StackName}-glue-db-${AWS::AccountId}'
+  GlueTable:
+    # Creating the table waits for the database to be created
+    DependsOn: GlueDatabase
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref GlueDatabase
+      TableInput:
+        Name: !Sub '${AWS::StackName}-glue-table-${AWS::AccountId}'
+        TableType: EXTERNAL_TABLE
+        Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
+        StorageDescriptor:
+          SchemaReference:
+            SchemaVersionNumber: 1
+            SchemaId: 
+              SchemaArn: !GetAtt GlueSchema.Arn
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          Location: !Sub 's3://${AWS::StackName}-input-bucket-${AWS::AccountId}/input'
+          SerdeInfo:
+            Parameters:
+              field.delim: ","
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
   S3BucketForInput:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     Properties:
       BucketName: !Sub '${AWS::StackName}-input-bucket-${AWS::AccountId}'
+      NotificationConfiguration:
+        LambdaConfigurations:
+        - Event: 's3:ObjectCreated:*'
+          Function: !GetAtt InvokeNotebookLambda.Arn      
+          Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: 'input'          
   S3BucketForOutput:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
@@ -129,6 +186,14 @@ Resources:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
+  BucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref InvokeNotebookLambda
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref "AWS::AccountId"
+      SourceArn: !Sub "arn:aws:s3:::${AWS::StackName}-input-bucket-${AWS::AccountId}"
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
