@@ -32,7 +32,9 @@ Resources:
         Name: !Sub '${AWS::StackName}-glue-db-${AWS::AccountId}'
   GlueTable:
     # Creating the table waits for the database to be created
-    DependsOn: GlueDatabase
+    DependsOn: 
+    - GlueDatabase
+    - S3Bucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
@@ -56,6 +58,8 @@ Resources:
   S3Bucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
+    DependsOn: 
+    - BucketPermission
     Properties:
       BucketName: !Sub '${AWS::StackName}-bucket-${AWS::AccountId}'
       NotificationConfiguration:
@@ -184,14 +188,21 @@ Resources:
                 Resource: '*'
   BucketPermission:
     Type: AWS::Lambda::Permission
+    DependsOn: 
+    - InvokeNotebookLambda   
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref InvokeNotebookLambda
       Principal: s3.amazonaws.com
       SourceAccount: !Ref "AWS::AccountId"
-      SourceArn: !Sub "arn:aws:s3:::${AWS::StackName}-input-bucket-${AWS::AccountId}"
+      SourceArn: !Sub "arn:aws:s3:::${AWS::StackName}-bucket-${AWS::AccountId}"
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
+    DependsOn: 
+    - LambdaExecutionRole
+    - ExecuteNotebookClientRole
+    - BasicExecuteNotebookRole
+    - ContainerBuildRole
     Properties:
       FunctionName: !Sub '${AWS::StackName}-RunNotebook'
       Description: A function to run Jupyter notebooks using SageMaker processing jobs
