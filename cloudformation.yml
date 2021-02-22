@@ -53,11 +53,11 @@ Resources:
               field.delim: ","
             SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
 
-  S3BucketForInput:
+  S3Bucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     Properties:
-      BucketName: !Sub '${AWS::StackName}-input-bucket-${AWS::AccountId}'
+      BucketName: !Sub '${AWS::StackName}-bucket-${AWS::AccountId}'
       NotificationConfiguration:
         LambdaConfigurations:
         - Event: 's3:ObjectCreated:*'
@@ -67,11 +67,7 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: 'input'          
-  S3BucketForOutput:
-    Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: !Sub '${AWS::StackName}-output-bucket-${AWS::AccountId}'      
+
 
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
