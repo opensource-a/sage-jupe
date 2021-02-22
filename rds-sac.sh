@@ -34,7 +34,7 @@ sed -i  "s/#querystring/$query/g" injected-$notebookName
 
 aws s3 cp injected-$notebookName s3://$s3Bucket/notebooks/
 
-aws s3 cp cities.csv s3://$s3Bucket/input
+aws s3 cp cities.csv s3://$s3Bucket/input/
 
 aws lambda invoke --function-name $stackName-RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3Bucket/notebooks/injected-$notebookName\", \"extra_args\": {\"NetworkConfig\": {\"VpcConfig\": {\"SecurityGroupIds\": [\"$securityGroup\"], \"Subnets\": [\"$subnetId\"]}}}}" result.json
 
