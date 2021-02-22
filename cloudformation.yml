@@ -16,7 +16,7 @@ Resources:
         PublishCloudWatchMetricsEnabled: true
         RequesterPaysEnabled: true
         ResultConfiguration:
-          OutputLocation: !Sub 's3://${AWS::StackName}-input-bucket-${AWS::AccountId}/output'
+          OutputLocation: !Sub 's3://${AWS::StackName}-bucket-${AWS::AccountId}/output'
   GlueSchema:
     Type: AWS::Glue::Schema
     Properties: 
@@ -47,7 +47,7 @@ Resources:
             SchemaId: 
               SchemaArn: !GetAtt GlueSchema.Arn
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
-          Location: !Sub 's3://${AWS::StackName}-input-bucket-${AWS::AccountId}/input'
+          Location: !Sub 's3://${AWS::StackName}-bucket-${AWS::AccountId}/input'
           SerdeInfo:
             Parameters:
               field.delim: ","
