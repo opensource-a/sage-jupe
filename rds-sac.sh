@@ -10,6 +10,7 @@ awsAccountId=$(aws sts get-caller-identity --query Account --output text)
 aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3BucketName,ParameterValue=$s3bucket
 aws cloudformation wait stack-create-complete --stack-name $stackName
 
+cp parameters.yml container/parameters.yml
 cd container
 chmod +x build_and_push.sh
 ./build_and_push.sh notebook-runner-$stackName
