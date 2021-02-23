@@ -249,6 +249,10 @@ Resources:
           import time
           from typing import Optional
           sm = boto3.client('sagemaker')
+          def ensure_session(session=_B):
+          	  A=session
+          	  if A is _B:A=boto3.session.Session()
+          	  return A          
           def get_unique_job_name(base_name: str):
               timestamp = time.strftime('%Y%m%d-%H%M%S')
               return f'{base_name}-{timestamp}'
