@@ -308,11 +308,11 @@ Resources:
               # (1) Get inputs
               K=ensure_session();L=K.region_name;M=K.client('sts').get_caller_identity()['Account']
               
-              #input_uri = event.get('S3Input', "s3://${
+              #input_uri = event.get('S3Input', "s3://"
               #ouput_uri = event['S3Output']
               image_uri = event.get('ImageUri', f"{M}.dkr.ecr.{L}.amazonaws.com/{A}:latest")
               print(image_uri)
-              script_uri = event.get('S3Script', "s3://${S3BucketName}/{S3NotebookPrefix}/{S3NotebookKey}")  # Optional: S3 path to custom script
+              script_uri = event.get('S3Script', "s3://${S3BucketName}/${S3NotebookPrefix}/${S3NotebookKey}")  # Optional: S3 path to custom script
               print(script_uri)
               # Get execution environment
               role = event.get('RoleArn', "${BasicExecuteNotebookRole.Arn}")
