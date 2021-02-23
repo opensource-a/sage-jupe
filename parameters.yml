@@ -1,7 +1,12 @@
-s3bucket:
-output_prefix:
-rdsendpoint:
-rdsuser:
-rdspassword:
-database:
-query:
+stackName: sage-jupe-101
+permissionBoundary: 'arn:aws:iam::aws:policy/AdministratorAccess'
+notebookName: rdsconvertor.ipynb
+securityGroup: <sg-id>
+subnetId: <subnet-id>
+s3bucket: <bucket-name>
+output_prefix: output
+rdsendpoint: <rds-endpoint>
+rdsuser: admin
+rdspassword: <password>
+database: cities
+query: 'select * from cities_data'
