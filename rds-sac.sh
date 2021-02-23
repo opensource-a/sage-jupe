@@ -8,6 +8,7 @@ rdsUser=admin
 rdsPassword=<password>
 database=cities
 query="select * from cities_data"
+output_prefix=output
 
 awsAccountId=$(aws sts get-caller-identity --query Account --output text)
 s3Bucket=$stackName-bucket-$awsAccountId
