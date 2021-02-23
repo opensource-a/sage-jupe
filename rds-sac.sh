@@ -1,3 +1,5 @@
+#!/bin/bash
+
 while read assign; do
  export "$assign";
 done < <(sed -nE 's/([a-z_]+): (.*)/\1=\2/ p' sac-parameters.yml)
