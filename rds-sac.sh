@@ -27,6 +27,7 @@ cp $notebookName injected-$notebookName
 
 sed -i  "s/#input_bucket/$s3Bucket/g" injected-$notebookName
 sed -i  "s/#output_bucket/$s3Bucket/g" injected-$notebookName
+sed -i  "s/#output_prefix/$output_prefix/g" injected-$notebookName
 sed -i  "s/#rdsendpoint/$rdsEndpoint/g" injected-$notebookName
 sed -i  "s/#user/$rdsUser/g" injected-$notebookName
 sed -i  "s/#password/$rdsPassword/g" injected-$notebookName
