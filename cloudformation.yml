@@ -3,6 +3,9 @@ Parameters:
     Type: String
     Default: 'arn:aws:iam::aws:policy/AdministratorAccess'
     Description: Permissions Boundary ARN for all roles 
+  S3BucketName:
+    Type: String
+    Description: Permissions Boundary ARN for all roles     
 
 Resources:
   AthenaWorkGroup:
@@ -16,7 +19,7 @@ Resources:
         PublishCloudWatchMetricsEnabled: true
         RequesterPaysEnabled: true
         ResultConfiguration:
-          OutputLocation: !Sub 's3://${AWS::StackName}-bucket-${AWS::AccountId}/output'
+          OutputLocation: !Sub 's3://${S3BucketName}/output'
   GlueSchema:
     Type: AWS::Glue::Schema
     Properties: 
@@ -49,7 +52,7 @@ Resources:
             SchemaId: 
               SchemaArn: !GetAtt GlueSchema.Arn
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
-          Location: !Sub 's3://${AWS::StackName}-bucket-${AWS::AccountId}/input'
+          Location: !Sub 's3://${S3BucketName}/input'
           SerdeInfo:
             Parameters:
               field.delim: ","
@@ -61,7 +64,7 @@ Resources:
     DependsOn: 
     - BucketPermission
     Properties:
-      BucketName: !Sub '${AWS::StackName}-bucket-${AWS::AccountId}'
+      BucketName: !Ref S3BucketName
       NotificationConfiguration:
         LambdaConfigurations:
         - Event: 's3:ObjectCreated:*'
@@ -195,7 +198,7 @@ Resources:
       FunctionName: !Ref InvokeNotebookLambda
       Principal: s3.amazonaws.com
       SourceAccount: !Ref "AWS::AccountId"
-      SourceArn: !Sub "arn:aws:s3:::${AWS::StackName}-bucket-${AWS::AccountId}"
+      SourceArn: !Sub "arn:aws:s3:::${S3BucketName}"
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
     DependsOn: 
