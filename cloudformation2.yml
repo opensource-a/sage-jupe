@@ -45,7 +45,7 @@ Resources:
         PublishCloudWatchMetricsEnabled: true
         RequesterPaysEnabled: true
         ResultConfiguration:
-          OutputLocation: !Sub 's3://${S3BucketName}/output'
+          OutputLocation: !Sub 's3://${S3BucketName}/${S3OutputPrefix}'
   GlueSchema:
     Type: AWS::Glue::Schema
     Properties: 
@@ -78,7 +78,7 @@ Resources:
             SchemaId: 
               SchemaArn: !GetAtt GlueSchema.Arn
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
-          Location: !Sub 's3://${S3BucketName}/input'
+          Location: !Sub 's3://${S3BucketName}/${S3InputPrefix}'
           SerdeInfo:
             Parameters:
               field.delim: ","
@@ -99,7 +99,7 @@ Resources:
               S3Key:
                 Rules:
                   - Name: prefix
-                    Value: 'input'          
+                    Value: ${S3InputPrefix}          
 
 
   ExecuteNotebookClientRole:
