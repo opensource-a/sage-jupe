@@ -8,6 +8,8 @@ done < <(sed -nE 's/([a-z_]+): (.*)/\1=\2/ p' parameters.yml)
 awsAccountId=$(aws sts get-caller-identity --query Account --output text)
 stackName=runnotebook-$notebookName-$(date "+%Y%m%d-%H%M%S")
 
+echo $stackName
+
 
 
 #aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3BucketName,ParameterValue=$s3bucket
