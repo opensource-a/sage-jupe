@@ -273,7 +273,7 @@ Resources:
           def execute_notebook(*,image,input_path,output_prefix,notebook,parameters,role,instance_type,rule_name,extra_args):
           	b='LocalPath';a='S3Uri';Z='-';Y='/';R='AWS_DEFAULT_REGION';J=extra_args;I=rule_name;F=notebook;E=output_prefix;D=input_path;C=role;A=image;K=ensure_session();L=K.region_name;M=K.client('sts').get_caller_identity()['Account']
           	if not A:A='notebook-runner'
-          	if Y not in A:A=f"{M}.dkr.ecr.{L}.amazonaws.com/{A}-${AWS::StackName}"
+          	if Y not in A:A=f"{M}.dkr.ecr.{L}.amazonaws.com/${AWS::StackName}"
           	if':'not in A:A=A+':latest'
           	if not C:C=f"${AWS::StackName}-BasicExecuteNotebookRole"
           	if Y not in C:C=f"arn:aws:iam::{M}:role/{C}"
