@@ -1,15 +1,10 @@
-stackName: sage-jupe-101
 permissionBoundary: 'arn:aws:iam::aws:policy/AdministratorAccess'
-notebookName: rdsconvertor.ipynb
+notebookPath: 
+notebookName: rdsconvertor
 processingInstanceType: ml.m5.large
 securityGroup: <sg-id>
 subnetId: <subnet-id>
-s3bucket: <bucket-name>
-input_prefix: input
-output_prefix: output
-notebook_prefix: notebooks
-rdsendpoint: <rds-endpoint>
-rdsuser: admin
-rdspassword: <password>
-database: cities
-query: 'select * from cities_data'
+inputs3bucket: <bucket-name>
+input_prefix1: cities
+input_prefix2: towns
+temp_bucket: <bucket-for-athena-queries-and-notebooks>
