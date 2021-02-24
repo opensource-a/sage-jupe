@@ -256,7 +256,7 @@ Resources:
           def execute_notebook(*,image,input_path,output_prefix,notebook,parameters,role,instance_type,rule_name,extra_args):
           	b='LocalPath';a='S3Uri';Z='-';Y='/';R='AWS_DEFAULT_REGION';J=extra_args;I=rule_name;F=notebook;E=output_prefix;D=input_path;C=role;A=image;K=ensure_session();L=K.region_name;M=K.client('sts').get_caller_identity()['Account']
           	if not A:A='notebook-runner'
-          	if Y not in A:A=f"{M}.dkr.ecr.{L}.amazonaws.com/{A}"
+          	if Y not in A:A=f"{M}.dkr.ecr.{L}.amazonaws.com/{A}-${AWS::StackName}"
           	if':'not in A:A=A+':latest'
           	if not C:C=f"${AWS::StackName}-BasicExecuteNotebookRole"
           	if Y not in C:C=f"arn:aws:iam::{M}:role/{C}"
@@ -277,4 +277,4 @@ Resources:
           	'If session is None, create a default session and return it. Otherwise return the session passed in';A=session
           	if A is _B:A=boto3.session.Session()
           	return A
-          def lambda_handler(event,context):A=event;B=execute_notebook(image=A.get('image'),input_path=A['input_path'],output_prefix=A.get('output_prefix'),notebook=A.get(_I),parameters=A.get('parameters',dict()),role=A.get('role'),instance_type=A.get('instance_type','ml.m5.large'),rule_name=A.get('rule_name'),extra_args=A.get('extra_args'));return{'job_name':B}
+          def lambda_handler(event,context):A=event;B=execute_notebook(image=A.get('image'),input_path=A.get('input_path',"s3://${S3BucketName}/${S3NotebookPrefix}/${S3NotebookKey}"),output_prefix=A.get('output_prefix'),notebook=A.get(_I),parameters=A.get('parameters',dict()),role=A.get('role'),instance_type=A.get('instance_type',"${ProcessingInstanceType}"),rule_name=A.get('rule_name'),extra_args=A.get('extra_args',{"NetworkConfig": {"VpcConfig": {"SecurityGroupIds": ["${ProcessingJobSecurityGroup}"], "Subnets": ["${ProcessingJobSubnetId}"]}}}));return{'job_name':B}
