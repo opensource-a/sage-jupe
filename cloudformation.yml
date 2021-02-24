@@ -122,7 +122,7 @@ Resources:
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookRole'
+      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookClientRole'
       PermissionsBoundary: !Ref PermissionsBoundary
       Description: >-
         A minimal role that lets the user run notebooks on demand or on a
