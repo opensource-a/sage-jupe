@@ -3,17 +3,20 @@ Parameters:
     Type: String
     Default: 'arn:aws:iam::aws:policy/AdministratorAccess'
     Description: Permissions Boundary ARN for all roles 
-  S3BucketName:
+  S3InputBucketName:
     Type: String
     Description: Bucket for input, output, notebook files     
-  S3InputPrefix:
+  S3InputPrefix1:
     Type: String
-    Default: 'input'
+    Default: 'cities'
     Description: Bucket prefix for input files
-  S3OutputPrefix:
+  S3InputPrefix2:
     Type: String
-    Default: 'output'
-    Description: Bucket prefix for output files
+    Default: 'towns'
+    Description: Bucket prefix for input files    
+  S3TempBucketName:
+    Type: String
+    Description: Bucket for temp files
   S3NotebookPrefix:
     Type: String
     Default: 'notebook'
@@ -31,7 +34,11 @@ Parameters:
     Description: Processing Job Security Group
   ProcessingJobSubnetId:
     Type: String
-    Description: Processing Job Subnet Id    
+    Description: Processing Job Subnet Id 
+  Timestamp:
+    Type: String
+    Default: '00000000-000000'
+    Description: Timestamp     
 
 Resources:
   AthenaWorkGroup:
@@ -45,63 +52,73 @@ Resources:
         PublishCloudWatchMetricsEnabled: true
         RequesterPaysEnabled: true
         ResultConfiguration:
-          OutputLocation: !Sub 's3://${S3BucketName}/${S3OutputPrefix}'
-  GlueSchema:
+          OutputLocation: !Sub 's3://${S3TempBucketName}/${AWS::StackName}/athena-query-output'
+  GlueSchema1:
     Type: AWS::Glue::Schema
     Properties: 
       Compatibility: DISABLED
       DataFormat: AVRO
-      Name: !Sub '${AWS::StackName}-glue-schema-${AWS::AccountId}'
+      Name: !Sub '${AWS::StackName}-${S3InputPrefix1}-schema'
       SchemaDefinition: '{"type" : "record","name" : "Cities", "fields" : [{"type": "string","name": "city"}, {"type": "string","name": "city_ascii"}, {"type": "double","name": "lat"}, {"type": "double", "name": "lng"}, {"type": "string","name": "country"},{"type": "string", "name": "iso2"}, {"type": "string", "name": "iso3"}, {"type": "string", "name": "admin_name"}, {"type": "string","name": "capital"},{"type": "double", "name": "population"},{"type": "double", "name": "id"}]}'
+  GlueSchema2:
+    Type: AWS::Glue::Schema
+    Properties: 
+      Compatibility: DISABLED
+      DataFormat: AVRO
+      Name: !Sub '${AWS::StackName}-${S3InputPrefix2}-schema'
+      SchemaDefinition: '{"type" : "record","name" : "Towns", "fields" : [{"type": "string","name": "city"}, {"type": "string","name": "city_ascii"}, {"type": "double","name": "lat"}, {"type": "double", "name": "lng"}, {"type": "string","name": "country"},{"type": "string", "name": "iso2"}, {"type": "string", "name": "iso3"}, {"type": "string", "name": "admin_name"}, {"type": "string","name": "capital"},{"type": "double", "name": "population"},{"type": "double", "name": "id"}]}'      
   GlueDatabase:
     Type: AWS::Glue::Database
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
         Name: !Sub '${AWS::StackName}-glue-db-${AWS::AccountId}'
-  GlueTable:
+  GlueTable1:
     # Creating the table waits for the database to be created
     DependsOn: 
     - GlueDatabase
-    - S3Bucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: !Ref GlueDatabase
       TableInput:
-        Name: !Sub '${AWS::StackName}-glue-table-${AWS::AccountId}'
+        Name: !Sub '${AWS::StackName}-${S3InputPrefix1}'
         TableType: EXTERNAL_TABLE
         Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
         StorageDescriptor:
           SchemaReference:
             SchemaVersionNumber: 1
             SchemaId: 
-              SchemaArn: !GetAtt GlueSchema.Arn
+              SchemaArn: !GetAtt GlueSchema1.Arn
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
-          Location: !Sub 's3://${S3BucketName}/${S3InputPrefix}'
+          Location: !Sub 's3://${S3InputBucketName}/${S3InputPrefix1}'
           SerdeInfo:
             Parameters:
               field.delim: ","
             SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
-
-  S3Bucket:
-    Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Retain
+  GlueTable2:
+    # Creating the table waits for the database to be created
     DependsOn: 
-    - BucketPermission
+    - GlueDatabase
+    Type: AWS::Glue::Table
     Properties:
-      BucketName: !Ref S3BucketName
-      NotificationConfiguration:
-        LambdaConfigurations:
-        - Event: 's3:ObjectCreated:*'
-          Function: !GetAtt InvokeNotebookLambda.Arn      
-          Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: ${S3InputPrefix}          
-
-
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref GlueDatabase
+      TableInput:
+        Name: !Sub '${AWS::StackName}-${S3InputPrefix2}'
+        TableType: EXTERNAL_TABLE
+        Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
+        StorageDescriptor:
+          SchemaReference:
+            SchemaVersionNumber: 1
+            SchemaId: 
+              SchemaArn: !GetAtt GlueSchema2.Arn
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          Location: !Sub 's3://${S3InputBucketName}/${S3InputPrefix2}'
+          SerdeInfo:
+            Parameters:
+              field.delim: ","
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe      
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -224,7 +241,7 @@ Resources:
       FunctionName: !Ref InvokeNotebookLambda
       Principal: s3.amazonaws.com
       SourceAccount: !Ref "AWS::AccountId"
-      SourceArn: !Sub "arn:aws:s3:::${S3BucketName}"
+      SourceArn: !Sub "arn:aws:s3:::${S3InputBucketName}"
   InvokeNotebookLambda:
     Type: 'AWS::Lambda::Function'
     DependsOn: 
@@ -233,7 +250,7 @@ Resources:
     - BasicExecuteNotebookRole
     - ContainerBuildRole
     Properties:
-      FunctionName: !Sub '${AWS::StackName}-RunNotebook'
+      FunctionName: !Sub '${AWS::StackName}-invoke'
       Description: A function to run Jupyter notebooks using SageMaker processing jobs
       Handler: index.lambda_handler
       Runtime: python3.7
@@ -277,4 +294,4 @@ Resources:
           	'If session is None, create a default session and return it. Otherwise return the session passed in';A=session
           	if A is _B:A=boto3.session.Session()
           	return A
-          def lambda_handler(event,context):A=event;B=execute_notebook(image=A.get('image'),input_path=A.get('input_path',"s3://${S3BucketName}/${S3NotebookPrefix}/${S3NotebookKey}"),output_prefix=A.get('output_prefix'),notebook=A.get(_I),parameters=A.get('parameters',dict()),role=A.get('role'),instance_type=A.get('instance_type',"${ProcessingInstanceType}"),rule_name=A.get('rule_name'),extra_args=A.get('extra_args',{"NetworkConfig": {"VpcConfig": {"SecurityGroupIds": ["${ProcessingJobSecurityGroup}"], "Subnets": ["${ProcessingJobSubnetId}"]}}}));return{'job_name':B}
+          def lambda_handler(event,context):A=event;B=execute_notebook(image=A.get('image'),input_path=A.get('input_path',"s3://${S3TempBucketName}/${S3NotebookPrefix}/${S3NotebookKey}"),output_prefix=A.get('output_prefix'),notebook=A.get(_I),parameters=A.get('parameters',dict()),role=A.get('role'),instance_type=A.get('instance_type',"${ProcessingInstanceType}"),rule_name=A.get('rule_name'),extra_args=A.get('extra_args',{"NetworkConfig": {"VpcConfig": {"SecurityGroupIds": ["${ProcessingJobSecurityGroup}"], "Subnets": ["${ProcessingJobSubnetId}"]}}}));return{'job_name':B}
