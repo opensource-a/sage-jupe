@@ -7,7 +7,7 @@ subnetId: <subnet-id>
 s3bucket: <bucket-name>
 input_prefix: input
 output_prefix: output
-notebook_prefix: notebook
+notebook_prefix: notebooks
 rdsendpoint: <rds-endpoint>
 rdsuser: admin
 rdspassword: <password>
