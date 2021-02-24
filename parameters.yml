@@ -1,5 +1,5 @@
 permissionBoundary: 'arn:aws:iam::aws:policy/AdministratorAccess'
-notebookPath: 
+notebookPath: notebooks
 notebookName: rdsconvertor
 processingInstanceType: ml.m5.large
 securityGroup: <sg-id>
