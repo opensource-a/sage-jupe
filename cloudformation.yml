@@ -122,7 +122,7 @@ Resources:
   ExecuteNotebookClientRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookClientRole'
+      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookRole'
       PermissionsBoundary: !Ref PermissionsBoundary
       Description: >-
         A minimal role that lets the user run notebooks on demand or on a
@@ -156,7 +156,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       PermissionsBoundary: !Ref PermissionsBoundary    
-      RoleName: !Sub '${AWS::StackName}-BasicExecuteNotebookRole'
+      RoleName: !Sub '${AWS::StackName}-ExecuteNotebookRole'
       Description: >-
         A minimal role used as the default for running the notebook container in
         SageMaker Processing
@@ -213,7 +213,7 @@ Resources:
     Type: 'AWS::IAM::Role'
     Properties:
       Description: The role for running the sagemaker_run_notebook lambda
-      RoleName: !Sub '${AWS::StackName}-RunNotebook-LambdaExecutionRole'
+      RoleName: !Sub '${AWS::StackName}-LambdaExecutionRole'
       PermissionsBoundary: !Ref PermissionsBoundary      
       AssumeRolePolicyDocument:
         Version: 2012-10-17
