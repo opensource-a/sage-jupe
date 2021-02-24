@@ -279,7 +279,7 @@ Resources:
           	if Y not in C:C=f"arn:aws:iam::{M}:role/{C}"
           	if E is _B:E=os.path.dirname(D)
           	if F==_B:F=D
-          	N=os.path.basename(F);O,S=os.path.splitext(N);G=time.strftime('%Y-%m-%d-%H-%M-%S',time.gmtime());T=('${AWS::StackName}-'+re.sub('[^-a-zA-Z0-9]',Z,O))[:62-len(G)]+Z+G;P='/opt/ml/processing/input/';U=P+os.path.basename(D);H='{}-{}{}'.format(O,G,S);Q='/opt/ml/processing/output/';B={_F:[{'InputName':_I,'S3Input':{a:D,b:P,'S3DataType':'S3Prefix','S3InputMode':'File','S3DataDistributionType':'FullyReplicated'}}],_C:{_G:[{'OutputName':'result','S3Output':{a:E,b:Q,'S3UploadMode':'EndOfJob'}}]},'ProcessingJobName':T,_D:{_E:{'InstanceCount':1,'InstanceType':instance_type,'VolumeSizeInGB':40}},_H:{'MaxRuntimeInSeconds':7200},'AppSpecification':{'ImageUri':A,'ContainerArguments':['run_notebook']},'RoleArn':C,_A:{}}
+          	N=os.path.basename(F);O,S=os.path.splitext(N);G=time.strftime('%Y-%m-%d-%H-%M-%S',time.gmtime());T=('${AWS::StackName}')[:62-len(G)]+Z+G;P='/opt/ml/processing/input/';U=P+os.path.basename(D);H='{}-{}{}'.format(O,G,S);Q='/opt/ml/processing/output/';B={_F:[{'InputName':_I,'S3Input':{a:D,b:P,'S3DataType':'S3Prefix','S3InputMode':'File','S3DataDistributionType':'FullyReplicated'}}],_C:{_G:[{'OutputName':'result','S3Output':{a:E,b:Q,'S3UploadMode':'EndOfJob'}}]},'ProcessingJobName':T,_D:{_E:{'InstanceCount':1,'InstanceType':instance_type,'VolumeSizeInGB':40}},_H:{'MaxRuntimeInSeconds':7200},'AppSpecification':{'ImageUri':A,'ContainerArguments':['run_notebook']},'RoleArn':C,_A:{}}
           	if J is not _B:B=merge_extra(B,J)
           	B[_A]['PAPERMILL_INPUT']=U;B[_A]['PAPERMILL_OUTPUT']=Q+H
           	if os.environ.get(R)!=_B:B[_A][R]=os.environ[R]
