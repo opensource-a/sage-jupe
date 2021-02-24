@@ -20,9 +20,9 @@ chmod +x build_and_push.sh
 
 cd ..
 
-aws s3 cp $notebookName s3://$s3bucket/notebooks/
+aws s3 cp $notebookName s3://$s3bucket/$notebook_prefix/
 
-aws s3 cp cities.csv s3://$s3bucket/input/
+aws s3 cp cities.csv s3://$s3bucket/$input_prefix/
 
 #aws lambda invoke --function-name $stackName-RunNotebook --payload "{\"image\": \"notebook-runner-$stackName\", \"input_path\": \"s3://$s3bucket/notebooks/$notebookName\", \"extra_args\": {\"NetworkConfig\": {\"VpcConfig\": {\"SecurityGroupIds\": [\"$securityGroup\"], \"Subnets\": [\"$subnetId\"]}}}}" result.json
 
