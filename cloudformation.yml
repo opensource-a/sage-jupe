@@ -82,7 +82,7 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: !Ref GlueDatabase
       TableInput:
-        Name: !Sub '${AWS::StackName}-${S3InputPrefix1}'
+        Name: !Sub '${S3InputPrefix1}'
         TableType: EXTERNAL_TABLE
         Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
         StorageDescriptor:
@@ -105,7 +105,7 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: !Ref GlueDatabase
       TableInput:
-        Name: !Sub '${AWS::StackName}-${S3InputPrefix2}'
+        Name: !Sub '${S3InputPrefix2}'
         TableType: EXTERNAL_TABLE
         Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
         StorageDescriptor:
