@@ -27,6 +27,12 @@ aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notifi
 
 cp $notebookPath/${notebookName}_parameters.yml container/parameters.yml
 cd container
+gluedatabase=$stackName-glue-db-$awsAccountId
+athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
+sed -i  "s/#gluedatabase/$gluedatabase/g" parameters.yml
+sed -i  "s/#gluetable1/$input_prefix1/g" parameters.yml
+sed -i  "s/#gluetable2/$input_prefix2/g" parameters.yml
+sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" parameters.yml
 chmod +x build_and_push.sh
 ./build_and_push.sh $stackName
 
