@@ -5,7 +5,7 @@ ENV JUPYTER_ENABLE_LAB yes
 ENV PYTHONUNBUFFERED TRUE
 
 COPY requirements.txt /tmp/requirements.txt
-COPY parameters.yml /tmp/parameters.yml
+
 RUN pip install papermill jupyter nteract-scrapbook boto3 requests==2.20.1 && pip install -r /tmp/requirements.txt
 
 ENV PYTHONUNBUFFERED=TRUE
