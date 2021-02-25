@@ -11,9 +11,14 @@ stackName=runnotebook-$notebookName-$timestamp
 
 echo $stackName
 
+schemadefinition1=$(cat schemadefinition1.json)
+schemadefinition2=$(cat schemadefinition2.json)
 
 
-#aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3BucketName,ParameterValue=$s3bucket
+cp cloudformation.yml injected-cloudformation.yml
+sed -i  "s/#schemadefinition1/$schemadefinition1/g" injected-cloudformation.yml
+sed -i  "s/#schemadefinition2/$schemadefinition2/g" injected-cloudformation.yml
+
 aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3InputBucketName,ParameterValue=$inputs3bucket ParameterKey=S3InputPrefix1,ParameterValue=$input_prefix1 ParameterKey=S3InputPrefix2,ParameterValue=$input_prefix2 ParameterKey=S3TempBucketName,ParameterValue=$temp_bucket ParameterKey=S3NotebookPrefix,ParameterValue=$stackName/notebooks ParameterKey=S3NotebookKey,ParameterValue=$notebookName.ipynb ParameterKey=ProcessingInstanceType,ParameterValue=$processingInstanceType ParameterKey=ProcessingJobSecurityGroup,ParameterValue=$securityGroup ParameterKey=ProcessingJobSubnetId,ParameterValue=$subnetId ParameterKey=Timestamp,ParameterValue=$timestamp  
 aws cloudformation wait stack-create-complete --stack-name $stackName
 
