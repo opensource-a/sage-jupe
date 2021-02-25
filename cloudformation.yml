@@ -59,14 +59,14 @@ Resources:
       Compatibility: DISABLED
       DataFormat: AVRO
       Name: !Sub '${AWS::StackName}-${S3InputPrefix1}-schema'
-      SchemaDefinition: '{"type" : "record","name" : "Cities", "fields" : [{"type": "string","name": "city"}, {"type": "string","name": "city_ascii"}, {"type": "double","name": "lat"}, {"type": "double", "name": "lng"}, {"type": "string","name": "country"},{"type": "string", "name": "iso2"}, {"type": "string", "name": "iso3"}, {"type": "string", "name": "admin_name"}, {"type": "string","name": "capital"},{"type": "double", "name": "population"},{"type": "double", "name": "id"}]}'
+      SchemaDefinition: '#schemadefinition1'
   GlueSchema2:
     Type: AWS::Glue::Schema
     Properties: 
       Compatibility: DISABLED
       DataFormat: AVRO
       Name: !Sub '${AWS::StackName}-${S3InputPrefix2}-schema'
-      SchemaDefinition: '{"type" : "record","name" : "Towns", "fields" : [{"type": "string","name": "city"}, {"type": "string","name": "city_ascii"}, {"type": "double","name": "lat"}, {"type": "double", "name": "lng"}, {"type": "string","name": "country"},{"type": "string", "name": "iso2"}, {"type": "string", "name": "iso3"}, {"type": "string", "name": "admin_name"}, {"type": "string","name": "capital"},{"type": "double", "name": "population"},{"type": "double", "name": "id"}]}'      
+      SchemaDefinition: '#schemadefinition2'      
   GlueDatabase:
     Type: AWS::Glue::Database
     Properties:
