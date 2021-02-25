@@ -18,7 +18,12 @@ cp cloudformation.yml injected-cloudformation.yml
 sed -i  "s/#schemadefinition1/$schemadefinition1/g" injected-cloudformation.yml
 sed -i  "s/#schemadefinition2/$schemadefinition2/g" injected-cloudformation.yml
 
-aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/injected-cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3InputBucketName,ParameterValue=$inputs3bucket ParameterKey=S3InputPrefix1,ParameterValue=$input_prefix1 ParameterKey=S3InputPrefix2,ParameterValue=$input_prefix2 ParameterKey=S3TempBucketName,ParameterValue=$temp_bucket ParameterKey=S3NotebookPrefix,ParameterValue=$stackName/notebooks ParameterKey=S3NotebookKey,ParameterValue=$notebookName.ipynb ParameterKey=ProcessingInstanceType,ParameterValue=$processingInstanceType ParameterKey=ProcessingJobSecurityGroup,ParameterValue=$securityGroup ParameterKey=ProcessingJobSubnetId,ParameterValue=$subnetId ParameterKey=Timestamp,ParameterValue=$timestamp  
+arr_input_prefix1=arrIN=(${input_prefix1//// })
+table1=${arr_input_prefix1[-1]}
+arr_input_prefix2=arrIN=(${input_prefix2//// })
+table2=${arr_input_prefix2[-1]}
+
+aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/injected-cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3InputBucketName,ParameterValue=$inputs3bucket ParameterKey=S3InputPrefix1,ParameterValue=$input_prefix1 ParameterKey=S3InputPrefix2,ParameterValue=$input_prefix2 ParameterKey=Table1,ParameterValue=$table1 ParameterKey=Table2,ParameterValue=$table2 ParameterKey=S3TempBucketName,ParameterValue=$temp_bucket ParameterKey=S3NotebookPrefix,ParameterValue=$stackName/notebooks ParameterKey=S3NotebookKey,ParameterValue=$notebookName.ipynb ParameterKey=ProcessingInstanceType,ParameterValue=$processingInstanceType ParameterKey=ProcessingJobSecurityGroup,ParameterValue=$securityGroup ParameterKey=ProcessingJobSubnetId,ParameterValue=$subnetId ParameterKey=Timestamp,ParameterValue=$timestamp  
 aws cloudformation wait stack-create-complete --stack-name $stackName
 
 lambdaarn=arn:aws:lambda:us-east-1:$awsAccountId:function:$stackName-invoke
