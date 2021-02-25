@@ -29,7 +29,7 @@ sed -i  "s/#prefix2/$input_prefix2/g" s3triggerlambdaconfig.json
 
 aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notification-configuration file://s3triggerlambdaconfig.json
 
-cp $notebookPath/${notebookName}_parameters.yaml container/parameters.yml
+cp $notebookPath/${notebookName}_parameters.yml container/parameters.yml
 cd container
 gluedatabase=$stackName-glue-db-$awsAccountId
 athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
