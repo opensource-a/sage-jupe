@@ -4,10 +4,12 @@ while read assign; do
  export "$assign";
 done < <(sed -nE 's/([a-z_0-9]+): (.*)/\1=\2/ p' parameters.yml)
 
+notebookName2=${originalnotebookName//[^[:alnum:]]/}
+notebookName=${notebookName2,,}
 
 awsAccountId=$(aws sts get-caller-identity --query Account --output text)
 timestamp=$(date "+%Y%m%d-%H%M%S")
-stackName=runnotebook-$notebookName-$timestamp
+stackName=sagemaker-pipeline-$timestamp
 
 echo $stackName
 
@@ -23,7 +25,7 @@ table1=${arr_input_prefix1[-1]}
 arr_input_prefix2=(${input_prefix2//// })
 table2=${arr_input_prefix2[-1]}
 
-aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/injected-cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3InputBucketName,ParameterValue=$inputs3bucket ParameterKey=S3InputPrefix1,ParameterValue=$input_prefix1 ParameterKey=S3InputPrefix2,ParameterValue=$input_prefix2 ParameterKey=Table1,ParameterValue=$table1 ParameterKey=Table2,ParameterValue=$table2 ParameterKey=S3TempBucketName,ParameterValue=$temp_bucket ParameterKey=S3NotebookPrefix,ParameterValue=$stackName/notebooks ParameterKey=S3NotebookKey,ParameterValue=$notebookName.ipynb ParameterKey=ProcessingInstanceType,ParameterValue=$processingInstanceType ParameterKey=ProcessingJobSecurityGroup,ParameterValue=$securityGroup ParameterKey=ProcessingJobSubnetId,ParameterValue=$subnetId ParameterKey=Timestamp,ParameterValue=$timestamp  
+aws cloudformation create-stack --stack-name $stackName --template-body file://$(pwd)/injected-cloudformation.yml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=PermissionsBoundary,ParameterValue=$permissionBoundary ParameterKey=S3InputBucketName,ParameterValue=$inputs3bucket ParameterKey=S3InputPrefix1,ParameterValue=$input_prefix1 ParameterKey=S3InputPrefix2,ParameterValue=$input_prefix2 ParameterKey=Table1,ParameterValue=$table1 ParameterKey=Table2,ParameterValue=$table2 ParameterKey=S3TempBucketName,ParameterValue=$temp_bucket ParameterKey=S3NotebookPrefix,ParameterValue=$stackName/notebooks ParameterKey=S3NotebookKey,ParameterValue=$originalnotebookName.ipynb ParameterKey=ProcessingInstanceType,ParameterValue=$processingInstanceType ParameterKey=ProcessingJobSecurityGroup,ParameterValue=$securityGroup ParameterKey=ProcessingJobSubnetId,ParameterValue=$subnetId ParameterKey=Timestamp,ParameterValue=$timestamp  
 aws cloudformation wait stack-create-complete --stack-name $stackName
 
 lambdaarn=arn:aws:lambda:us-east-1:$awsAccountId:function:$stackName-invoke
