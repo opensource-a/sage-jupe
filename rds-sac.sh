@@ -29,20 +29,20 @@ sed -i  "s/#prefix2/$input_prefix2/g" s3triggerlambdaconfig.json
 
 aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notification-configuration file://s3triggerlambdaconfig.json
 
-cp $notebookPath/${notebookName}_parameters.yaml container/parameters.yml
+#cp $notebookPath/${notebookName}_parameters.yaml container/parameters.yml
 cd container
-gluedatabase=$stackName-glue-db-$awsAccountId
-athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
-sed -i  "s/#gluedatabase/$gluedatabase/g" parameters.yml
-sed -i  "s/#gluetable1/$input_prefix1/g" parameters.yml
-sed -i  "s/#gluetable2/$input_prefix2/g" parameters.yml
-sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" parameters.yml
+#gluedatabase=$stackName-glue-db-$awsAccountId
+#athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
+#sed -i  "s/#gluedatabase/$gluedatabase/g" parameters.yml
+#sed -i  "s/#gluetable1/$input_prefix1/g" parameters.yml
+#sed -i  "s/#gluetable2/$input_prefix2/g" parameters.yml
+#sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" parameters.yml
 chmod +x build_and_push.sh
 ./build_and_push.sh $stackName
 
 cd ..
 
-aws s3 cp $notebookPath/$notebookName.ipynb s3://$temp_bucket/$stackName/notebooks/$notebookName.ipynb
+aws s3 cp $notebookPath/ s3://$temp_bucket/$stackName/notebooks/ --recursive
 
 #aws s3 cp cities.csv s3://$inputs3bucket/$input_prefix1/
 
