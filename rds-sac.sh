@@ -38,16 +38,18 @@ aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notifi
 
 #cp $notebookPath/${notebookName}_parameters.yml container/parameters.yml
 cd container
-#gluedatabase=$stackName-glue-db-$awsAccountId
-#athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
-#sed -i  "s/#gluedatabase/$gluedatabase/g" parameters.yml
-#sed -i  "s/#gluetable1/$input_prefix1/g" parameters.yml
-#sed -i  "s/#gluetable2/$input_prefix2/g" parameters.yml
-#sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" parameters.yml
+
 chmod +x build_and_push.sh
 ./build_and_push.sh $stackName
 
 cd ..
+
+gluedatabase=$stackName-glue-db-$awsAccountId
+athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
+sed -i  "s/#gluedatabase/$gluedatabase/g" $notebookPath/$originalnotebookName_parameters.yml
+sed -i  "s/#gluetable1/$input_prefix1/g" $notebookPath/$originalnotebookName_parameters.yml
+sed -i  "s/#gluetable2/$input_prefix2/g" $notebookPath/$originalnotebookName_parameters.yml
+sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" $notebookPath/$originalnotebookName_parameters.yml
 
 aws s3 cp $notebookPath/ s3://$temp_bucket/$stackName/notebooks/ --recursive
 
