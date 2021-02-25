@@ -30,9 +30,9 @@ aws cloudformation wait stack-create-complete --stack-name $stackName
 
 lambdaarn=arn:aws:lambda:us-east-1:$awsAccountId:function:$stackName-invoke
 cp s3triggerlambdaconfigtemplate.json s3triggerlambdaconfig.json
-sed -i  "s/#lambdaarn/$lambdaarn/g" s3triggerlambdaconfig.json
-sed -i  "s/#prefix1/$input_prefix1/g" s3triggerlambdaconfig.json
-sed -i  "s/#prefix2/$input_prefix2/g" s3triggerlambdaconfig.json
+sed -i  "s~#lambdaarn~$lambdaarn~g" s3triggerlambdaconfig.json
+sed -i  "s~#prefix1~$input_prefix1~g" s3triggerlambdaconfig.json
+sed -i  "s~#prefix2~$input_prefix2~g" s3triggerlambdaconfig.json
 
 aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notification-configuration file://s3triggerlambdaconfig.json
 
