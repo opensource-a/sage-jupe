@@ -1,7 +1,1 @@
-botocore==1.18.18
-scikit-learn
-pandas
-matplotlib
-fsspec
-s3fs
-mysql-connector
+os
