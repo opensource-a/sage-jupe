@@ -13,7 +13,15 @@ Parameters:
   S3InputPrefix2:
     Type: String
     Default: 'towns'
-    Description: Bucket prefix for input files    
+    Description: Bucket prefix for input files  
+  Table1:
+    Type: String
+    Default: 'cities'
+    Description: glue table1 name
+  Table2:
+    Type: String
+    Default: 'towns'
+    Description: glue table 2 name    
   S3TempBucketName:
     Type: String
     Description: Bucket for temp files
@@ -58,14 +66,14 @@ Resources:
     Properties: 
       Compatibility: DISABLED
       DataFormat: AVRO
-      Name: !Sub '${AWS::StackName}-${S3InputPrefix1}-schema'
+      Name: !Sub '${AWS::StackName}-${Table1}-schema'
       SchemaDefinition: '#schemadefinition1'
   GlueSchema2:
     Type: AWS::Glue::Schema
     Properties: 
       Compatibility: DISABLED
       DataFormat: AVRO
-      Name: !Sub '${AWS::StackName}-${S3InputPrefix2}-schema'
+      Name: !Sub '${AWS::StackName}-${Table2}-schema'
       SchemaDefinition: '#schemadefinition2'      
   GlueDatabase:
     Type: AWS::Glue::Database
@@ -82,7 +90,7 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: !Ref GlueDatabase
       TableInput:
-        Name: !Sub '${S3InputPrefix1}'
+        Name: !Sub '${Table1}'
         TableType: EXTERNAL_TABLE
         Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
         StorageDescriptor:
@@ -105,7 +113,7 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: !Ref GlueDatabase
       TableInput:
-        Name: !Sub '${S3InputPrefix2}'
+        Name: !Sub '${Table2}'
         TableType: EXTERNAL_TABLE
         Parameters: {"classification": "csv", "delimiter": ",", "skip.header.line.count": "1"}
         StorageDescriptor:
