@@ -293,7 +293,7 @@ Resources:
           	if os.environ.get(R)!=_B:B[_A][R]=os.environ[R]
           	B[_A]['PAPERMILL_PARAMS']=json.dumps(parameters);B[_A]['PAPERMILL_NOTEBOOK_NAME']=N
           	if I is not _B:B[_A]['AWS_EVENTBRIDGE_RULE']=I
-            print(B)
+          	print(B)
           	V=boto3.client('sagemaker');H=V.create_processing_job(**B);W=H['ProcessingJobArn'];X=re.sub('^.*/','',W);return X
           def merge_extra(orig,extra):
           	C='KmsKeyId';B=extra;A=dict(orig);A[_F].extend(B.get(_F,[]));A[_C][_G].extend(B.get(_C,{}).get(_G,[]))
