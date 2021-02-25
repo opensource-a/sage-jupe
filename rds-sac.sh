@@ -11,9 +11,8 @@ stackName=runnotebook-$notebookName-$timestamp
 
 echo $stackName
 
-schemadefinition1=$(cat schemadefinition1.json)
-schemadefinition2=$(cat schemadefinition2.json)
-
+schemadefinition1=$(cat schemadefinition1.json | tr -d '\n')
+schemadefinition2=$(cat schemadefinition2.json | tr -d '\n')
 
 cp cloudformation.yml injected-cloudformation.yml
 sed -i  "s/#schemadefinition1/$schemadefinition1/g" injected-cloudformation.yml
