@@ -46,10 +46,10 @@ cd ..
 
 gluedatabase=$stackName-glue-db-$awsAccountId
 athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
-sed -i  "s/#gluedatabase/$gluedatabase/g" $notebookPath/$originalnotebookName_parameters.yaml
-sed -i  "s/#gluetable1/$table1/g" $notebookPath/$originalnotebookName_parameters.yaml
-sed -i  "s/#gluetable2/$table2/g" $notebookPath/$originalnotebookName_parameters.yaml
-sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" $notebookPath/$originalnotebookName_parameters.yaml
+sed -i  "s/#gluedatabase/$gluedatabase/g" $notebookPath/${originalnotebookName}_parameters.yaml
+sed -i  "s/#gluetable1/$table1/g" $notebookPath/${originalnotebookName}_parameters.yaml
+sed -i  "s/#gluetable2/$table2/g" $notebookPath/${originalnotebookName}_parameters.yaml
+sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" $notebookPath/${originalnotebookName}_parameters.yaml
 
 aws s3 cp $notebookPath/ s3://$temp_bucket/$stackName/notebooks/ --recursive
 
