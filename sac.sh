@@ -44,8 +44,8 @@ chmod +x build_and_push.sh
 
 cd ..
 
-chmod +x inject-parameters.sh
+chmod +x inject-environmental-parameters-to-aac.sh
 
-./inject-parameters.sh $stackName
+./inject-environmental-parameters-to-aac.sh $stackName
 
 aws s3 cp $notebookPath/ s3://$temp_bucket/$stackName/notebooks/ --recursive
