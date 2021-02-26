@@ -19,4 +19,4 @@ sed -i  "s/#gluetable1/$table1/g" $notebookPath/${originalnotebookName}_paramete
 sed -i  "s/#gluetable2/$table2/g" $notebookPath/${originalnotebookName}_parameters.yaml
 sed -i  "s/#athenaworkgroup/$athenaworkgroup/g" $notebookPath/${originalnotebookName}_parameters.yaml
 
-echo "Notebook files injectected with parameters correctly"
+echo "Notebook files injected with parameters correctly"
