@@ -40,7 +40,7 @@ aws s3api put-bucket-notification-configuration --bucket $inputs3bucket --notifi
 cd container
 
 chmod +x build_and_push.sh
-./build_and_push.sh $stackName
+./build_and_push.sh --base python:3.7-stretch $stackName
 
 cd ..
 
