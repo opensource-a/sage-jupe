@@ -14,6 +14,8 @@ table2=${arr_input_prefix2[-1]}
 
 gluedatabase=$stackName-glue-db-$awsAccountId
 athenaworkgroup=$stackName-athena-workgroup-$awsAccountId
+
+cp $notebookPath/${originalnotebookName}_parameters_template.yaml $notebookPath/${originalnotebookName}_parameters.yaml
 sed -i  "s/#gluedatabase/$gluedatabase/g" $notebookPath/${originalnotebookName}_parameters.yaml
 sed -i  "s/#gluetable1/$table1/g" $notebookPath/${originalnotebookName}_parameters.yaml
 sed -i  "s/#gluetable2/$table2/g" $notebookPath/${originalnotebookName}_parameters.yaml
