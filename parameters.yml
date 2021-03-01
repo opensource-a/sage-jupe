@@ -2,6 +2,7 @@ permissionBoundary: 'arn:aws:iam::aws:policy/AdministratorAccess'
 notebookPath: notebooks
 originalnotebookName: rdsconvertor
 processingInstanceType: ml.m5.large
+processingJobBaseImage: python:3.7-stretch
 securityGroup: <sg-id>
 subnetId: <subnet-id>
 inputs3bucket: <bucket-name>
