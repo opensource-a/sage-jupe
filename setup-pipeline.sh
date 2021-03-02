@@ -49,3 +49,4 @@ chmod +x inject-environmental-parameters-to-aac.sh
 ./inject-environmental-parameters-to-aac.sh $stackName
 
 aws s3 cp $notebookPath/ s3://$temp_bucket/$stackName/notebooks/ --recursive
+
