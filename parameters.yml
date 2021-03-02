@@ -9,3 +9,4 @@ inputs3bucket: <bucket-name>
 input_prefix1: cities
 input_prefix2: towns
 temp_bucket: <bucket-for-athena-queries-and-notebooks>
+
